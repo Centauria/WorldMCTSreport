@@ -1,0 +1,63 @@
+\documentclass{beamer}
+
+\usepackage{default}
+\usepackage{xeCJK}
+\usepackage{fontspec}
+\setmainfont{SimSun}
+\usetheme{DarkConsole}
+
+\title{研究报告}
+\author{陈泰然}
+\institute{USTC nelslip}
+\logo{\includegraphics[width=2cm,height=2cm]{figures/ustc_logo_fig}}
+%\date{}
+
+\begin{document}
+	\frame{\titlepage}
+	
+%	\begin{frame}
+%		\frametitle{目录}
+%		\tableofcontents
+%	\end{frame}
+	
+	\AtBeginSection[]
+	{
+		\begin{frame}
+			\frametitle{目录}
+			\tableofcontents
+		\end{frame}
+	}
+	
+	\section{World Model的核心组成}
+	
+	\begin{frame}
+		\frametitle{World Model的核心组成}
+		World Model由三部分组成：
+		\begin{itemize}
+			\item[V] VAE Model
+			\item[M] MDN-RNN Model
+			\item[C] Controller Model
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{V Model}
+		在World Model中，V的作用是学习输入图像的一个抽象的、高度压缩的表示。在实验中，采用一个简单的Variational Autoencoder（VAE）作为V模型，来将每一帧输入图像编码成为一个很小的向量$z$。
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{M Model}
+		M是一个预测模型，它的作用是预测V模型下一步即将产生的$z$。
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{C Model}
+		C的作用是决定agent下一步的动作，让累积回报期望最大。\\
+		在实验中，有意地把C做的非常简单，这样做是为了让agent的复杂度集中在V和M中。C是如下的一个线性模型：
+		\begin{equation}
+			a_t=W_c[z_t\ h_t]+b_c
+		\end{equation}
+		在该模型中，$W_c$和$b_c$分别是权重矩阵和偏置向量，将$z_t$和$h_t$连接而成的向量映射到动作向量$a_t$。
+	\end{frame}
+
+\end{document}
