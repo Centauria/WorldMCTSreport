@@ -28,6 +28,26 @@
 	\end{frame}
 }
 
+\section{Dynamic Programming}
+
+\begin{frame}
+	\frametitle{Dynamic Programming}
+	RL中的Dynamic Programming(DP)指的是一类算法，给定一个完美的环境模型，DP算法可以计算其对应的最佳策略。\\
+	这里先假设环境是一个finite MDP，该MDP的“完美”性体现在其一步变换转移概率是完全已知的，即$p(s^{'},r|s,a)$已知。\\
+	DP的主要思想，是利用value function来组织策略的搜索。 DP通过将Bellman Optimality Equation转化为能够不断优化value function近似值的更新规则。
+\end{frame}
+
+\begin{frame}
+	\frametitle{Dynamic Programming}
+	DP算法由两部分组成：
+	\begin{itemize}
+		\item 先考虑对任意的策略$\pi$，如何计算$v_\pi$。这一步叫做策略估计（Policy Evaluation）。
+		\item 再考虑如何修改策略$\pi$使$v_\pi$变大。这一步叫做策略优化（Policy Improvement）。
+	\end{itemize}
+	策略优化过程在策略为确定性策略的时候，可以推导出策略优化定理：
+	令$\pi$,$\pi'$是一对确定的策略，如果对于$\forall s\in S$，有$q_\pi (s,\pi'(s))\ge v_\pi (s)$，那么$\pi'$一定不会劣于$\pi$，也就是说，对于$\forall s\in S$，有$v_(\pi^{'} ) (s)\ge v_\pi (s)$。
+\end{frame}
+
 \section{World Model的核心组成}
 
 \begin{frame}
@@ -48,7 +68,7 @@
 \begin{frame}
 	\frametitle{M Model}
 	M是一个预测模型，它的作用是预测V模型下一步即将产生的$z$。\\
-	在实验中，采用一个MDN-RNN模型
+	在实验中，采用一个MDN-RNN模型，其构造为一个RNN加上一个混合密度网络（MDN），用于输出$z$的概率分布$p(z)$。
 \end{frame}
 
 \begin{frame}
@@ -59,6 +79,16 @@
 		a_t=W_c[z_t\ h_t]+b_c
 	\end{equation}
 	在该模型中，$W_c$和$b_c$分别是权重矩阵和偏置向量，将$z_t$和$h_t$连接而成的向量映射到动作向量$a_t$。
+\end{frame}
+
+\section{MCTS在World Model中的应用}
+
+\begin{frame}
+	\frametitle{World Model+MCTS}
+	MCTS的思路是使用随机模拟的方法来选择最佳的动作的，这个思路可以应用到World Model中的Controller模型上。\\
+	原来的C Model使用的是一个简单的线性映射模型，将$z_t$和$h_t$拼接成的向量直接映射到动作。\\
+	改成用MCTS的思路之后，会展开一个Monte Carlo树，评估每个叶子的累计reward，然后在根节点处取一个使之下的所有叶子的平均累计reward最大的一步动作，然后执行这个动作。
+	这个思路现在还没有具体算法实现，有待进一步验证。
 \end{frame}
 
 \end{document}
